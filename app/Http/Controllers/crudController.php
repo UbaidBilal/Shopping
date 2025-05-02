@@ -55,10 +55,22 @@ class crudController extends Controller
             @unlink($image_path);
         }
             
-            $path = $req->image->store('image','public');  
-        }
-        
+            $path = $req->image->store('image','public'); 
+            
+            $product = DB::table('products')->where('id',$req->id)->update([
+                'product_name'=>$req->product_name,
+                'product_details'=>$req->product_details,
+                'price'=>$req->price,
+                'category'=>$req->category,
+                'quantity'=>$req->quantity,
+                'image'=>$path]);
+            if($product){
+                return redirect('dashboard');
+            }else{
+                echo "<h2>Data Not Updated</h2>";
+            }
 
+        }else{
 
         $product = DB::table('products')->where('id',$req->id)->update([
             'product_name'=>$req->product_name,
@@ -66,12 +78,13 @@ class crudController extends Controller
             'price'=>$req->price,
             'category'=>$req->category,
             'quantity'=>$req->quantity,
-            'image'=>$path]);
+    ]);
         if($product){
             return redirect('dashboard');
         }else{
             echo "<h2>Data Not Updated</h2>";
         }
+    }
     }
     public function edit($id){
         $product = DB::table('products')->find($id);
